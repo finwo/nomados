@@ -1,0 +1,6 @@
+/dep/
+/initrd/
+/rootfs/
+/nomados-ext-*.cpio
+/nomados-ext-*.cpio.gz
+/rootfs.tar

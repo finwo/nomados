@@ -1,0 +1,22 @@
+{
+    "data_dir": "/var/lib/nomad/data",
+    "datacenter": "dc1",
+    "client": {
+        "enabled": true,
+        "options": {
+            "user.denylist": "",
+            "user.checked_drivers": "exec,raw_exec"
+        },
+        "server_join": {
+            "retry_join": ["nomad", "10.1.1.80"],
+            "retry_max": 10,
+            "retry_interval": "1s"
+        },
+        "state_dir": "/var/lib/nomad/client"
+    },
+    "server": {
+        "enabled": false
+    },
+    "log_level": "DEBUG",
+    "bind_addr": "0.0.0.0"
+}
