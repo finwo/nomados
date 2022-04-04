@@ -17,6 +17,6 @@
     "server": {
         "enabled": false
     },
-    "log_level": "DEBUG",
+    "log_level": "TRACE",
     "bind_addr": "0.0.0.0"
 }
