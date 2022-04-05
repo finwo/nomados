@@ -35,7 +35,7 @@ initrd: rootfs.tar dep/sbase/tar src/initrd/init
 rootfs.tar: rootfs
 	tar cv -C rootfs $(shell ls rootfs/) > rootfs.tar
 
-rootfs: dep/sdhcp/sdhcp dep/nomad/nomad src/rootfs/init
+rootfs: dep/sdhcp/sdhcp dep/nomad/nomad src/rootfs/init dep/ubase/df
 	# Create directory structure
 	mkdir -p rootfs
 	mkdir -p rootfs/etc
@@ -51,6 +51,12 @@ rootfs: dep/sdhcp/sdhcp dep/nomad/nomad src/rootfs/init
 	cp config/nomad.json rootfs/etc/nomad/init.json
 	cp dep/nomad/nomad rootfs/sbin/nomad
 	./add-deps.sh rootfs/sbin/nomad rootfs
+	# Add df command (nomad dep)
+	cp dep/ubase/df rootfs/sbin/df
+	./add-deps.sh rootfs/sbin/df rootfs
+	# Add IP command (nomad dep)
+	cp $(shell which ip) rootfs/sbin/ip
+	./add-deps.sh rootfs/sbin/ip rootfs
 
 dep/linux/arch/$(ARCH)/boot/bzImage: dep/linux
 	(cd dep/linux ; $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(CROSS_COMPILE) allnoconfig)
@@ -101,6 +107,14 @@ dep/sbase:
 dep/sbase/tar: dep/sbase
 	(cd dep/sbase ; $(MAKE) LDFLAGS=-static CC=$(CROSS_COMPILE)gcc -j tar)
 	(cd dep/sbase ; strip tar)
+
+dep/ubase:
+	mkdir -p dep
+	git clone --depth=1 git://git.suckless.org/ubase dep/ubase
+
+dep/ubase/df: dep/ubase
+	(cd dep/ubase ; $(MAKE) CC=$(CROSS_COMPILE)gcc -j df)
+	(cd dep/ubase ; strip df)
 
 src/initrd/init: src/initrd/init.c
 	$(CROSS_COMPILE)gcc -O3 -static -s -Isrc/lib -o src/initrd/init src/lib/mount.c src/lib/spawn.c src/initrd/init.c

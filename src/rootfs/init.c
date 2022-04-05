@@ -110,6 +110,10 @@ int main() {
   spawn(cmd_dhcp);
   sleep(5);
 
+  // DEBUG: show block device layout
+  spawn(cmd_test);
+  sleep(5);
+
   // Start nomad
   spawn(cmd_nomad);
 
